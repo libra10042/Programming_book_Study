@@ -227,3 +227,52 @@ private void checkUserAndLevel(User updated, String expectedId, Level expectedLe
 > 2) 하나의 클래스나 성격과 목적과 같이 긴밀한 클래스 몇 개를 모아서 외부와의 의존관계를 모두 차단하고 필요에 따라 스텁이나 목 오브젝트 등의 테스트 대역을 이용하도록
 > 테스트를 만든다. 단위 테스트는 테스트 작성도 간단하고 실행 속도도 빠르며 테스트 대상 외의 코드나 환경으로부터 테스트 결과에 영향을 받지도 않기 때문에 가장 빠른 시간에 효과적인
 > 테스트를 작성하기에 유리하다. 
+
+----
+
+### 목 프레임워크
+> 단위 테스트를 만들기 위해서는 스텁이나 목 오브젝트의 사용이 필수적이다. 
+> 의존관계가 없는 단순한 클래스나 세부 로직을 검증하기 위해 메소드 단위로 테스트할 때가 아니라면, 대부분 의존 오브젝트를 필요로 하는 코드를 테스트하게 되기 때문이다.
+
+##### mockito 프레임워크
+> mockito와 같은 목 프레임워크의 특징은 목 클래스를 일일이 준비해둘 필요가 없다는 점이다. 
+
+- 사용 방법
+- 1) 인터페이스를 이용해 목 오브젝트를 만든다.
+- 2) 목 오브젝트가 리턴할 값이 있으면 이를 지정해준다. 메소드가 호출되면 예외를 강제로 던지게 만들 수도 있다.
+- 3) 테스트 대상 오브젝트에 DI 해서 목 오브젝트가 테스트 중에 사용되도록 만든다.
+- 4) 테스트 대상 오브젝트를 사용한 후에 목 오브젝트의 특정 메소드가 호출됐는지, 어떤 값을 가지고 몇 번 호출 됐는지를 검증한다.
+
+##### Mockito를 적용한 테스트 코드
+
+```
+@Test
+public void mockUpgradeLevels() throws Exception{
+    UserServiceImpl userServiceImpl = new UserServiceImpl();
+    
+    UserDao mockUesrDao = mock(UserDao.class);
+    when(mockUserDao.getAll()).thenReturn(this.users); 
+    userServiceImpl.setUserDao(mockUserDao);                             // 다이나믹한 목 오브젝트 생성과 메소드의 리턴 값 설정. 그리고 DI 까지 세줄이면 충분하다.
+    
+    MailSender mockMailSender = mock(MailSender.class);
+    userServiceImpl.setMailSender(mockMailSender);                       // 리턴 값이 없는 메소드를 가진 오브젝트는 더욱 간단하게 만들 수 있다.
+    
+    userServiceImpl.upgradeLevels(); 
+    
+    
+    verify(mockUserDao, times(2)).update(and(User.class));
+    verify(mockUserDao, times(2)).update(and(User.class));
+    verify(mockUserDao).update(users.get(1));
+    assertThat(users.get(1).getLevel(), is(Level.SILVER)); 
+    verify(mockUserDao).update(users.get(3));
+    assertThat(users.get(3).getLevel(), is(Level.GOLD));
+    
+    
+    ArgumentCaptor<SimpleMailMessage> mailMessageArg = ArgumentCaptor.forClass(SimpleMailMessage.class); 
+    verify(mockMailSender, times(2)).send(mailMessageArg.capture());                           // 파라미터를 정밀하게 검사하기 위해 캡처할 수도 있다.
+    
+    assertThat(mailMessage.get(0).getTo()[0], is(users.get(1).getEmail()));
+    assertThat(mailMessage.get(1).getTo()[0], is(users.get(3).getEmail()));
+}
+```
+
