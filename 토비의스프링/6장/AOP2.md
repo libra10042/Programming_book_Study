@@ -14,4 +14,27 @@
 
 ### 데코레이터 패턴. 
 > 타깃에 부가적인 기능을 런타임 시 다이내믹하게 부여해주기 위해 프록시를 사용하는 패턴을 말한다. 
-- 데코레이터 패턴에서는 프록시가 한개로 고정되지 않는다.
+> 데코레이터 패턴에서는 프록시가 한개로 고정되지 않는다.
+> 프록시로서 동작하는 각 데코레이터는 위임하는 대상에도 인터페이스로 접근하기 때문에 자신이 최종 타깃에 위임하는지, 아니면 다음 단계의 데코레이터 프록시로 위임하는지는 알지 못한다.
+> 그래서 데코레이터의 다음 위임 대상은 인터페이스로 선언하고 생성자나 수정자 메소드를 통해 위임 대상을 외부에서 런타임 시에 주입받을 수 있도록 만들어야 한다.
+> 자바 IO 패키지의 InputStream과 OutputStream 구현 클래스는 데코레이터 패턴이 사용된 대표적인 예이다. 
+
+예) InputStream 이라는 인터페이스를 구현한 타깃인 FileInputStream에 버퍼 읽기 기능을 제공해주는 BufferedInputStream이라는 데코레이터를 적용한 예
+```java
+InputStream is = new BufferedInputStream(new FileInputStream("a.txt"));
+```
+##### 데코레이터 패턴을 위한 DI 설정.
+```java
+<!-- 데코레이터 -->
+<bean id="userService" class="springbook.user.service.UserServiceTx">
+    <property name="transactionManager" ref="transactionManager" />
+    <property name="userService" ref="userServiceImpl" />
+</bean>
+
+<!-- 타깃 -->
+<bean id="userServiceImpl" class="springbook.user.service.UserServiceImpl">
+    <property name="userDao" ref="userDao" />
+    <property name="mailSender" fer="mailSender" />
+</bean>
+```
+
