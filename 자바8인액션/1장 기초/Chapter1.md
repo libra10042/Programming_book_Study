@@ -45,6 +45,8 @@ inventory.sort(comparing(Apple::getWeight));
 
 ----
 
+## 스트림 처리 
 
-
+> 스트림이란 한 번에 한 개씩 만들어지는 연속적인 데이터 항목들의 모임이다. <br>
+> 자바 8에서는 java.util.stream 패키지에 스트림 API가 추가되었다.
 
