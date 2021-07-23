@@ -1,4 +1,4 @@
-# Java 서적을 읽고 기록하는 repository 입니다. 
+ Java 서적을 읽고 기록하는 repository 입니다. 
 
 ### 토비의 스프링 (study)
 
