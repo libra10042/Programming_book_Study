@@ -48,5 +48,99 @@ inventory.sort(comparing(Apple::getWeight));
 ## 스트림 처리 
 
 > 스트림이란 한 번에 한 개씩 만들어지는 연속적인 데이터 항목들의 모임이다. <br>
-> 자바 8에서는 java.util.stream 패키지에 스트림 API가 추가되었다.
+> 자바 8에서는 java.util.stream 패키지에 스트림 API가 추가되었다. <br>
+> 스트림 API 는 파이프라인을 만드는데 필요한 많은 메서드를 제공한다.
+
+"자바8에서 스트림 API의 핵심은 우리가 하려는 작업을 고수준으로 추상화해서 일련의 스트림으로 만들어 처리할 수 있다는 것이다. 또한 스트림 파이프라인을 이용해서 입력 부분을 여러 CPU 코어에 쉽게 할당할 수 있다는 부가적인 이득도 얻을 수 있다." <br>
+
+> 병렬성을 꽁짜로 얻을 수 있다.
+     - 일반적으로 synchronized는 시스템 성능에 악영향을 미친다. 하지만 자바 8 스트림을 이용하면 기존의 자바 스레드 API보다 쉽게 병렬성을 활용할 수 있다.
+
+
+
+<br><br>
+
+
+### 자바8에 추가된 개념. 
+
+
+1. 메서드 래퍼런스 <br>
+     - 기존에 객체 래퍼런스를 이용해서 객체를 이리저리 주고받았던 것처럼 자바 8에서는 File::isHiden을 이용해서 메서드 래퍼런스를 전달할 수 있게 되었다. 
+
+```java
+File[] hiddenFiles = new File(".").listFiles(File::isHidden);
+```
+
+
+2. 람다 : 익명함수   https://mangkyu.tistory.com/113
+
+##### 자바 8 이전 
+
+
+```java
+
+// 녹색사과를 선택해서 리스트로 반환
+public staic List<Apple> filterGreenApples(List<Apple> inventory){
+
+     List<Apple> result = new ArrayList<>();
+     for(Apple apple : inventory){
+          if("green".equals(apple.getColor())){
+               result.add(apple);
+          }
+     }
+     return result;
+}
+
+
+// 무게 150kg 이상 필터링
+public static List<Apple> filterHeavyApples(List<Apple> inventory){
+     List<Apple> result = new ArrayList<>();
+     for(Apple apple : inventory){
+          if(apple.getWeight() > 150){
+               result.add(apple);
+          }
+     }
+     return result;
+}
+```
+
+
+##### 자바 8코드
+
+```java
+public static boolean isGreenApple(Apple apple){
+     return "green".equals(apple.getColor());
+}
+
+public static boolean isHeavyApple(Apple apple){
+     return apple.getWeight() > 150;
+}
+
+public interface Predicate<T>{
+     boolean test(T, t);
+}
+
+static List<Apple> filterApples(List<Apple> inventory, Predicate<Apple> p){
+     
+     List<Apple> result = new ArrayList<>();
+     for(Apple apple : inventory){
+          if(p.test(apple)){
+               result.add(apple);
+          }
+     }
+     return result; 
+}
+```
+
+```java
+// 1) 메서드 호출방법1
+filterApples(inventory, Apple::isGreenApple);
+
+// 2) 메서드 호출방법2
+filterApples(inventory, Apple::isHeavyApple);
+
+
+```
+
+* Iterator 과 for-each 의 차이점 : https://erinyees.tistory.com/21
 
