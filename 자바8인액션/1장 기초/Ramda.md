@@ -144,3 +144,28 @@ filterApples(inventory, Apple::isHeavyApple);
 
 * Iterator 과 for-each 의 차이점 : https://erinyees.tistory.com/21
 
+
+##### 메서드 전달에서 람다로
+
+
+```java
+filterApples(inventory, (Apple a) -> "green".equals(a.getColor()));
+
+or
+
+filterApples(inventory, (Apple a) -> "a.getWeight() >150);
+
+or 
+
+filterApples(inventory, (Apple, a) -> a.getWeight() <80 || "brown".equals(a.getColor()));
+
+```
+
+###### filter를 이용
+
+```java
+filter(inventory, (Apple a) -> a.getWeight() > 150); 
+```
+
+: 위 코드는 병렬성이라는 중요성 때문에 설계자들은 이와 같은 설계를 포기했다. 대신 자바 8에서는 filter와 비슷한 동작을 수행하는 연산집합을 포함하는 새로운 API를 제공한다.
+또한 컬렉션과 스트림 간에 변환할 수 있는 메서드(map, reduc 등) 도 제공한다.
