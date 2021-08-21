@@ -129,7 +129,57 @@ public abstract class Pizza {
 ```java
 public class MyPizza extends Pizza { 
 
-
+        public enum Size { SAMLL, MEDIUM, LARGE };
+        private final Size size;
+        
+        public static class Builder extends Pizza.Builder<Builder> {
+        
+            private final Size size; 
+            
+            public Builder(Size size){
+                this.sizes = Object.requireNonNull(size);
+            
+            }
+            
+            @Override public NyPizza build(){
+                return new NyPizza(this);
+            }
+            
+            @Override protected Builder self() { return this; }
+            
+        
+        }
+        
+        
+        private class Calzone extends Pizza {
+            private final boolean sauceInside;
+            
+            public static class Builder extends Pizza.Builder<Builder>{
+            
+                private boolean sauceInside = false; // 기본값. 
+                
+                public Builder sauceInside(){
+                    sauceInside = true; 
+                    return this; 
+                
+                }
+                
+                @Override public Calzone build(){
+                    return new Calzone(this);
+                }
+                
+                @Override protected Builder self() { return this;}
+                
+            
+            }
+        
+        }
+        
+        
+        private CalzoneBuilder builder(){
+            super(builder);
+            sauceInside = builder.sauceInside; 
+        }
 
 
 }
