@@ -87,3 +87,21 @@ static void copy(String str, String dst) throws IOException {
 ```
 
 
+#### try-with-resources 를 catch 절과 함께 쓰는 모습
+
+```java
+static String firstLineOfFile(String path, String defaultVal){
+
+    try(BufferdReader br = new BufferedReader( new FileReader(path))) {
+            return br.readLine();
+    }catch(IOException e){
+            return defaultVal; 
+    }
+
+}
+
+```
+
+### 정리
+
+꼭 회수해야 하는 자원을 다룰 떄는 try-finally 말록, try-with-resources를 사용하자.
