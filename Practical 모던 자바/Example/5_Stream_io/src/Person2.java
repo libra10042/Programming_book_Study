@@ -1,6 +1,6 @@
 import java.util.Objects;
 
-public class Person2 {
+public class Person2 implements Comparable<Person2> {
     private String name;
     private String age;
 
@@ -61,5 +61,10 @@ public class Person2 {
     @Override
     public int hashCode() {
         return (name + age).hashCode();
+    }
+
+    @Override
+    public int compareTo(Person2 o) {
+        return (name + age).compareTo(o.getName() + o.getAge());
     }
 }
