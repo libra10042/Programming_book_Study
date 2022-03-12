@@ -18,5 +18,5 @@ public class PeriodTaskExample {
 //        // 5초 후에 실행, 10초 주기로 반복 실행.
         executorService.scheduleAtFixedRate(new ExecutorServiceExample.MyTask("RAate 2"), 5, 10, TimeUnit.SECONDS);
 
-
+    }
 }
