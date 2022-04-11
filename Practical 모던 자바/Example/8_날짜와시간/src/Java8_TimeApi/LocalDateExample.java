@@ -1,7 +1,6 @@
-package Java8_TimeApi;
+package Java8_TimeDateApi;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
 
 /*
